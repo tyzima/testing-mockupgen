@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&amp;family=Poppins:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Cloudinary Image Transformation
+  </title>
+  <style>
+   body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-box {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #6200ea;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #3700b3;
+        }
+
+        .img-container {
+            position: relative;
+            display: none; /* Hide by default */
+            margin-bottom: 20px;
+            overflow: hidden;
+            margin: 40px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .overlay-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 150px;
+            height: 150px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .overlay-container img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+    #sizeSlider {
+    -webkit-appearance: none;
+    width: 400px;
+    height: 4px;
+    border-radius: 5px;
+    background-color: #e2e2e2;
+    outline: none;
+}
+    #sizeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #7c7c7c;
+}
+
+label[for="sizeSlider"] {
+    font-weight: 900;
+    font-size: 25px;
+    color: #c9c9c9;
+    font-family: 'Poppins';
+    font-variant-caps: all-petite-caps;
+}
+
+label[for="Header"] {
+    font-weight: 900;
+    font-size: 45px;
+    color: #c9c9c9;
+    font-family: 'Poppins';
+    font-variant-caps: all-petite-caps;
+}
+
+.variable {
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 4px;
+    cursor: help;
+    transition: background-color 0.2s;
+}
+.variable:hover {
+    background-color: #f3f3f3;
+}
+.overlayImageId { color: #e63946; }
+.width { color: #428b29; }
+.height { color: #a8dadc; }
+.x { color: #457b9d; }
+.y { color: #1d3557; }
+.baseImageId { color: #f4a261; }
+.baseURL { color: #ededed; }
+
+.URLMockContainer {
+    color: #ededed;
+    text-align: center ;
+
+}
+      
+    
+body { padding: 2% 5%; }
+input[type="range"] {
+    width: 80%;
+    margin: 20px auto;
+    display: block;
+}
+  </style>
+ </head>
+ 
+ <body>
+
+  <div>
+    <center><label for="Header">
+        Mockup url generator
+       </label></center>
+<br>
+
+    <div class="img-container" id="imageContainer">
+        <img alt="Base Image" id="baseImg" onload="adjustCanvasSize()" src=""/>
+        <div class="overlay-container" id="overlayContainer">
+         <img alt="Overlay Image" id="overlayImg" src=""/>
+        </div>
+       </div>
+
+       
+  <div class="container">
+   <br>
+   <input class="input-box" id="baseImage" placeholder="Product ID" type="text"/>
+   <input class="input-box" id="overlayImage" placeholder="Logo ID" type="text"/>
+   <button class="btn" id="loadImages">
+    Load Images
+   </button>
+  
+   <div>
+
+</div>
+
+  
+<br><br>
+   <input id="sizeSlider" max="250" min="50" onchange="resizeOverlayImage()" type="range" value="150"/>
+<center><label for="sizeSlider">
+    Adjust Overlay Image Size
+   </label></center>
+   <br/><br>
+   <textarea class="input-box" id="transformationURL" placeholder="Cloudinary Transformation URL" readonly="" rows="3"></textarea>
+  <br><br>
+   <div class="URLMockContainer" id="URLMockContainer">
+    <span class="variable baseURL" title="This is the cloud URL for the base image.">https://res.cloudinary.com/laxdotcom/image/upload/</span><br>
+    l_<span class="variable overlayImageId" title="This is the ID for the overlay image.">LogoID</span>,
+    w_<span class="variable width" title="This defines the width of the image.">Width</span>,
+    x_<span class="variable x" title="This defines the x-coordinate for positioning.">X</span>,
+    y_<span class="variable y" title="This defines the y-coordinate for positioning.">Y</span>/
+    <span class="variable baseImageId" title="This is the base image ID.">ProductID</span>
+   </div>
+<br>
+</div>
+
+   <div>
+     </div>
+    </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.10.11/interact.min.js">
+  </script>
+  <script>
+   document.getElementById('loadImages').addEventListener('click', function() {
+            const baseImageId = document.getElementById('baseImage').value;
+            const overlayImageId = document.getElementById('overlayImage').value;
+
+            document.getElementById('baseImg').src = `https://res.cloudinary.com/laxdotcom/image/upload/${baseImageId}`;
+            document.getElementById('overlayImg').src = `https://res.cloudinary.com/laxdotcom/image/upload/${overlayImageId}`;
+        });
+
+        function adjustCanvasSize() {
+            const baseImage = document.getElementById('baseImg');
+            const container = document.getElementById('imageContainer');
+
+            container.style.width = baseImage.width + 'px';
+            container.style.height = baseImage.height + 'px';
+            container.style.display = 'block';
+
+            initDrag();
+        }
+
+        function initDrag() {
+            const overlayContainer = document.getElementById('overlayContainer');
+
+            interact(overlayContainer)
+            .draggable({
+                listeners: {
+                    move(event) {
+                        const target = event.target;
+                        const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+                        const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+                        target.style.transform = `translate(${x}px, ${y}px)`;
+                        target.setAttribute('data-x', x);
+                        target.setAttribute('data-y', y);
+
+                        updateCloudinaryURL(x, y, target.offsetWidth, target.offsetHeight);
+                    }
+                }
+            });
+        }
+
+        function resizeOverlayImage() {
+            const overlayContainer = document.getElementById('overlayContainer');
+            const slider = document.getElementById('sizeSlider');
+            const newSize = slider.value;
+
+            overlayContainer.style.width = newSize + 'px';
+            overlayContainer.style.height = newSize + 'px';
+
+            const x = parseFloat(overlayContainer.getAttribute('data-x')) || 0;
+            const y = parseFloat(overlayContainer.getAttribute('data-y')) || 0;
+
+            updateCloudinaryURL(x, y, newSize, newSize);
+        }
+
+        function updateCloudinaryURL(x, y, width, height) {
+            const baseImageId = document.getElementById('baseImage').value;
+            const overlayImageId = document.getElementById('overlayImage').value;
+
+            const transformationURL = `https://res.cloudinary.com/laxdotcom/image/upload/l_${overlayImageId},g_north_west,w_${width},x_${x},y_${y}/${baseImageId}`;
+
+            document.getElementById('transformationURL').value = transformationURL;
+        }
+  </script>
+ </body>
+</html>
