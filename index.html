@@ -99,14 +99,6 @@ label[for="sizeSlider"] {
     font-variant-caps: all-petite-caps;
 }
 
-label[for="Header"] {
-    font-weight: 900;
-    font-size: 55px;
-    color: #c9c9c9;
-    font-family: 'Poppins';
-    font-variant-caps: all-petite-caps;
-}
-
 .variable {
     font-weight: bold;
     padding: 2px 5px;
@@ -142,23 +134,16 @@ input[type="range"] {
  </head>
  
  <body>
-
-  <div>
-    <center><label for="Header">
-        Mockup url generator
-       </label></center>
-<br>
-
     <div class="img-container" id="imageContainer">
         <img alt="Base Image" id="baseImg" onload="adjustCanvasSize()" src=""/>
         <div class="overlay-container" id="overlayContainer">
          <img alt="Overlay Image" id="overlayImg" src=""/>
         </div>
        </div>
-
-       
   <div class="container">
-   <br>
+    <center><label for="sizeSlider">
+        MOCKUP URL GENERATOR
+       </label></center> <br>
    <input class="input-box" id="baseImage" placeholder="Product ID" type="text"/>
    <input class="input-box" id="overlayImage" placeholder="Logo ID" type="text"/>
    <button class="btn" id="loadImages">
@@ -175,6 +160,7 @@ input[type="range"] {
 <center><label for="sizeSlider">
     Adjust Overlay Image Size
    </label></center>
+   <br/>
    <br/><br>
    <textarea class="input-box" id="transformationURL" placeholder="Cloudinary Transformation URL" readonly="" rows="3"></textarea>
   <br><br>
@@ -182,6 +168,7 @@ input[type="range"] {
     <span class="variable baseURL" title="This is the cloud URL for the base image.">https://res.cloudinary.com/laxdotcom/image/upload/</span><br>
     l_<span class="variable overlayImageId" title="This is the ID for the overlay image.">LogoID</span>,
     w_<span class="variable width" title="This defines the width of the image.">Width</span>,
+    h_<span class="variable height" title="This defines the height of the image.">Height</span>,
     x_<span class="variable x" title="This defines the x-coordinate for positioning.">X</span>,
     y_<span class="variable y" title="This defines the y-coordinate for positioning.">Y</span>/
     <span class="variable baseImageId" title="This is the base image ID.">ProductID</span>
@@ -191,7 +178,6 @@ input[type="range"] {
 
    <div>
      </div>
-    </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.10.11/interact.min.js">
   </script>
   <script>
